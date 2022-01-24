@@ -1700,7 +1700,7 @@ pub type PartyId = u8;
 /// Ciphertext/Plaintext identifier
 pub type EncStatus = bool;
 
-#[derive(Clone, Debug, Default, Serialize, Deserialize)]
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 /// An IR constraint system.
 pub struct ComputationMetadata {
     /// A map from party names to numbers assigned to them.

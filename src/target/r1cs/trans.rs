@@ -233,9 +233,11 @@ impl ToR1cs {
             xs.fold(first, |a, x| self.mul(a, x))
         } else {
             // Needed to end the closures borrow of self, before the next line.
-            #[allow(clippy::needless_collect)]
-            let negs: Vec<TermLc> = xs.map(|x| self.bool_not(&x)).collect();
-            let a = self.nary_or(negs.into_iter());
+            let negs = xs
+                .map(|x| self.bool_not(&x))
+                .collect::<Vec<_>>()
+                .into_iter();
+            let a = self.nary_or(negs);
             self.bool_not(&a)
         }
     }
@@ -245,9 +247,11 @@ impl ToR1cs {
         let n = xs.len();
         if n <= 3 {
             // Needed to end the closures borrow of self, before the next line.
-            #[allow(clippy::needless_collect)]
-            let negs: Vec<TermLc> = xs.map(|x| self.bool_not(&x)).collect();
-            let a = self.nary_and(negs.into_iter());
+            let negs = xs
+                .map(|x| self.bool_not(&x))
+                .collect::<Vec<_>>()
+                .into_iter();
+            let a = self.nary_and(negs);
             self.bool_not(&a)
         } else {
             let sum = xs.fold(self.zero.clone(), |s, x| s + &x);
@@ -849,9 +853,7 @@ impl ToR1cs {
                         PfNaryOp::Add => args.fold(self.zero.clone(), std::ops::Add::add),
                         PfNaryOp::Mul => {
                             // Needed to end the above closures borrow of self, before the mul call
-                            #[allow(clippy::needless_collect)]
-                            let args = args.cloned().collect::<Vec<_>>();
-                            let mut args_iter = args.into_iter();
+                            let mut args_iter = args.cloned().collect::<Vec<_>>().into_iter();
                             let first = args_iter.next().unwrap();
                             args_iter.fold(first, |a, b| self.mul(a, b))
                         }
